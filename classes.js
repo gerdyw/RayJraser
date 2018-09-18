@@ -163,7 +163,6 @@ class Plane extends SceneObject {
     
     Intersect(source, direction) {
         if (direction.Dot(this.n) == 0) return -1;
-		if 
         return (this.a - source.Dot(this.n)) / (direction.Dot(this.n));
     }
     
