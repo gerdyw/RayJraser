@@ -1,0 +1,17 @@
+{
+  "name": "ray-tracing",
+  "version": "1.0.0",
+  "description": "ray-trace-test",
+  "main": "index.js",
+  "dependencies": {
+    "express": "^4.16.3",
+    "jcanvas": "^21.0.1",
+    "jquery": "^3.3.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}

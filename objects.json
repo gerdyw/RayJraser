@@ -1,0 +1,56 @@
+[
+  {
+    "type": "Sphere",
+    "colour": {
+      "ambient": "#ffffff",
+      "diffuse": "#ffffff",
+      "specular": "#ffffff",
+      "shininess": 70,
+      "reflectivity": 0
+    },
+    "scale": 1,
+    "translate": 0
+  },
+  {
+    "type": "Plane",
+    "colour": {
+      "ambient": "#aaaaaa",
+      "diffuse": "#aaaaaa",
+      "specular": "#aaaaaa",
+      "shininess": 20,
+      "reflectivity": 0.1
+    },
+    "normal": [0, 1, 0],
+    "distance": -3
+  },
+  {
+    "type": "Triangle",
+    "colour": {
+      "ambient"     : "#bbbbbb",
+      "diffuse"     : "#bbbbbb",
+      "specular"    : "#bbbbbb",
+      "shininess"   : 80,
+      "reflectivity": 0.8
+    },
+    "vertices": [
+	  [0, 0, -2.1],
+      [0,  2.1, 0],
+      [-2.1, 0, 0]
+    ]
+  },
+  {
+    "type": "Triangle",
+    "colour": {
+      "ambient"     : "#000000",
+      "diffuse"     : "#000000",
+      "specular"    : "#000000",
+      "shininess"   : 80,
+      "reflectivity": 0.8
+    },
+    "vertices": [
+	  [0, 0, -2.105],
+      [0,  2.105, 0],
+      [-2.105, 0, 0]
+    ]
+  }
+]

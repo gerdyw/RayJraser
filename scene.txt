@@ -1,0 +1,34 @@
+let mA = new Vector(-5,  3, -2);
+let mB = new Vector(-5, -3, -2);
+let mC = new Vector( 0,  3, -4);
+let mD = new Vector( 0, -3, -4);
+let mE = new Vector( 5,  3, -2);
+let mF = new Vector( 5, -3, -2);
+let mG = new Vector( 0, -3,  2);
+let sphere = new Colour(1, 1, 1);
+let mirrorAD = new Colour(0, 0, 0);
+let mirrorS = new Colour(0, 0, 0);
+let ground = new Colour(1, 0, 1);
+let red = new Colour(1, 0, 0);
+let cyan = new Colour(0, 1, 1);
+let objects = [
+	new Sphere(sphere, sphere, sphere, 100, null, null, null),
+	new Triangle(mirrorAD, mirrorAD, mirrorS, 70, 0.8, mA, mB, mD),
+	new Triangle(mirrorAD, mirrorAD, mirrorS, 70, 0.8, mD, mC, mA),
+	new Triangle(mirrorAD, mirrorAD, mirrorS, 70, 0.8, mD, mF, mC),
+	new Triangle(mirrorAD, mirrorAD, mirrorS, 70, 0.8, mC, mF, mE),
+//	new Triangle(mirrorAD, mirrorAD, mirrorS, 70, 0.8, mF, mE, mG),
+	new Plane(ground, ground, ground, 10, null, new Vector(0, 1, 0), -3)
+];
+
+let redLight = new Colour(0.3, 0, 0);
+let blueLight = new Colour(0, 0, 0.3);
+
+let lights = [
+		new Light(new Vector(0, 0, 0), new Colour(0, 0, 0), new Colour(0, 0, 0), new Colour(0, 0, 0)),
+		new Light(new Vector(3, 4, 5), redLight, redLight, redLight),
+		new Light(new Vector(-3, 4, 5), blueLight, blueLight, blueLight),
+		new Light(new Vector(3, 4, 5), new Colour(0, 0.01, 0.01), new Colour(0, 0.1, 0.1), new Colour(0, 0.1, 0.1)),
+//          new Light(new Vector(-3, 4, 5), new Colour(0.4, 0, 0), new Colour(0.4, 0, 0), new Colour(0.8, 0, 0)),
+//		new Light(new Vector(0, 1, 5), new Colour(0.2, 0.2, 0.2), new Colour(0, 0, 0), new Colour(0, 0, 0)),
+];
