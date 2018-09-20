@@ -109,32 +109,44 @@ function fireDrawer() {
 	if ($("#aa").prop("checked")) callback = (c, r) => generatePixelAA(c, r, fillColour);
 	else callback = (c, r) => generatePixel(c, r, fillColour);
 
-    drawImage(callback, time);
+//    drawImage(callback, new Date());
+	drawImageEdgeAA(callback, (c, r) => generatePixelAA(c, r, fillColour), new Date());
 }
 
-function drawImageEdgeAA(callback) {
+function drawImage(callback, time) {
 	console.log("starting draw");
 	
-	let depths = edgeAA ? measureDepths() : null;
+    for (var r = 0; r < image.height; r++) {
+        for (var c = 0; c < image.width; c++) {
+			callback(c, r);
+        }
+    }
+	let finished = new Date();
+	$("#render-status").text(`${finished - time}ms`);
+	$("#render-button").removeAttr("disabled");
+}
+
+function drawImageEdgeAA(callback, callbackAA, time) {
+	console.log("starting draw");
+
+	let depths = measureDepths();
 	let queue = new CircularQueue(9);
 
     for (let r = 0; r < image.height; r++) {
         for (let c = 0; c < image.width; c++) {
-			if (!edgeAA) {
-				callback(c, r);
-				continue;
-			}
 			if (c == 1) {
-				queue.clear()
 				for (let i = 0; i < 9; i++) queue.push(depths.get((i % 3) - 1 + c, Math.floor(i / 3) - 1) + r);
-			} else if ((r != 0) && (r != image.height - 1) && (c > 1) && (c != image.width - 1)) {
+				if (Math.abs(depths.get(c, r) - queue.max) > SIGNIFICANT_DEPTH || Math.abs(depths.get(c, r) - queue.min) > SIGNIFICANT_DEPTH)
+					callbackAA(c, r);
+			} else if ((r > 0) && (r < image.height - 1) && (c > 1) && (c < image.width - 1)) {
 				queue.push(depths.get(c + 1, r - 1));
 				queue.push(depths.get(c + 1, r));
 				queue.push(depths.get(c + 1, r + 1));
 				let max = queue.max;
 				let min = queue.min;
-				if (Math.abs(depths.get(c, r) - max) > SIGNIFICANT_DEPTH || Math.abs(depths.get(c, r) - min) > SIGNIFICANT_DEPTH) generatePixelAA()
-			}
+				if (Math.abs(depths.get(c, r) - max) > SIGNIFICANT_DEPTH || Math.abs(depths.get(c, r) - min) > SIGNIFICANT_DEPTH) callbackAA(c, r);
+				else callback(c, r);
+			} else callback(c, r);
         }
     }
 	let finished = new Date();
@@ -153,7 +165,7 @@ function generatePixelEdgeAA(c, r, hit, dir, callback) {
 
 function measureDepths() {
 	let depths = new Matrix(image.width, image.height);
-	for (let r = 0; r < image.height, r++) {
+	for (let r = 0; r < image.height; r++) {
 		for (let c = 0; c < image.width; c++) {
 			let d = getRay(c, r);
 			let hit = intersect(eye, d, -1);
@@ -173,20 +185,22 @@ function getRay(c, r) {
 function generatePixel(c, r, callback) {
 	let d = getRay(c, r);
 	let hit = intersect(eye, d, -1);
+	let colour;
 	if (hit == null) {
-		let colour = bground;
+		colour = bground;
 	} else {
-		let colour = Phong(hit.obj, eye, d, hit.t, reflects, -1);
+		colour = Phong(hit.obj, eye, d, hit.t, reflects, -1);
 	}
 	callback(c, r, colour);
 }
 
 function generatePixelSync(d) {
 	let hit = intersect(eye, d, -1);
+	let colour;
 	if (hit == null) {
-		let colour = bground;
+		colour = bground;
 	} else {
-		let colour = Phong(hit.obj, eye, d, hit.t, reflects, -1);
+		colour = Phong(hit.obj, eye, d, hit.t, reflects, -1);
 	}
 	return colour;
 }
