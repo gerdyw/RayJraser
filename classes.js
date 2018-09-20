@@ -255,11 +255,41 @@ class PhongColour {
 class CircularQueue {
 	constructor(length) {
 		this.array = new Array(length);
+		this.length = length;
 		this.i = 0;
 	}
 	
 	push(value) {
 		this.array[this.i] = value;
 		this.i += 1;
+		this.i %= this.length;
+	}
+
+	get max() {
+		return this.array.reduce((a, c) => c > a ? c : a, this.array[0]);
+	}
+	get min() {
+		return this.array.reduce((a, c) => c < a ? c : a, this.array[0]);
+	}
+	clear() {
+		this.array = new Array(this.length);
+	}
+}
+
+class Matrix {
+	constructor(x, y) {
+		this.array = new Array(x * y);
+		this.width = x;
+		this.height = y;
+	}
+
+	set(x, y, val) {
+		if (!(x < this.width && y < this.height)) throw new RangeError("index does not exist");
+		this.array[x + y * this.height] = val;
+	}
+
+	get(x, y) {
+		if (!(x < this.width && y < this.height)) return undefined;
+		return this.array[x + y * this.height];
 	}
 }

@@ -1,6 +1,7 @@
 let bground = new Colour("#00bfff");
 let eye = new Vector(4, 6, -12);
 let view = new Vector(0, 0, 0);
+let SIGNIFICANT_DEPTH = 0.1;
 
 let coords = lookAt(eye, view);
 //let coords = {
@@ -9,7 +10,7 @@ let coords = lookAt(eye, view);
 //	n: new Vector(0, 0, 1).Normalise()
 //}
 
-var image, viewPlane;
+let image, viewPlane;
 
 let reflects = 10;
 let AA = false;
@@ -18,7 +19,7 @@ let light = new Colour(0, 0, 0);
 let redLight = light.red.Multiply(0.5);
 let blueLight = light.blue.Multiply(0.5);
 
-var hasFired = false;
+let edgeAA = false;
 
 let lights = [
 		new Light(new Vector(3, 4, 5), redLight, redLight, redLight),
@@ -32,11 +33,11 @@ let lights = [
 
 //  scaling, translation, ambient, diffuse, specular, shininess, reflectivity, j, k, l
 
-var fillColour;
+let fillColour;
 
 function main() {
-	var canvas = document.getElementById("canvas");
-	var ctx = canvas.getContext("2d");
+	let canvas = document.getElementById("canvas");
+	let ctx = canvas.getContext("2d");
 	
 	fillColour = (c, r, colour) => {
 		ctx.fillStyle = colour.Hex();
@@ -59,7 +60,7 @@ function main() {
 		}
 	});
 	
-	var callback;
+	let callback;
 	if (AA) callback = (c, r) => generatePixelAA(c, r, fillColour);
 	else callback = (c, r) => generatePixel(c, r, fillColour);
 	
@@ -107,17 +108,33 @@ function fireDrawer() {
 	
 	if ($("#aa").prop("checked")) callback = (c, r) => generatePixelAA(c, r, fillColour);
 	else callback = (c, r) => generatePixel(c, r, fillColour);
-	
-	let time = new Date();
+
     drawImage(callback, time);
 }
 
-function drawImage(callback, time) {
+function drawImageEdgeAA(callback) {
 	console.log("starting draw");
 	
-    for (var r = 0; r < image.height; r++) {
-        for (var c = 0; c < image.width; c++) {
-			callback(c, r);
+	let depths = edgeAA ? measureDepths() : null;
+	let queue = new CircularQueue(9);
+
+    for (let r = 0; r < image.height; r++) {
+        for (let c = 0; c < image.width; c++) {
+			if (!edgeAA) {
+				callback(c, r);
+				continue;
+			}
+			if (c == 1) {
+				queue.clear()
+				for (let i = 0; i < 9; i++) queue.push(depths.get((i % 3) - 1 + c, Math.floor(i / 3) - 1) + r);
+			} else if ((r != 0) && (r != image.height - 1) && (c > 1) && (c != image.width - 1)) {
+				queue.push(depths.get(c + 1, r - 1));
+				queue.push(depths.get(c + 1, r));
+				queue.push(depths.get(c + 1, r + 1));
+				let max = queue.max;
+				let min = queue.min;
+				if (Math.abs(depths.get(c, r) - max) > SIGNIFICANT_DEPTH || Math.abs(depths.get(c, r) - min) > SIGNIFICANT_DEPTH) generatePixelAA()
+			}
         }
     }
 	let finished = new Date();
@@ -127,11 +144,23 @@ function drawImage(callback, time) {
 
 function generatePixelEdgeAA(c, r, hit, dir, callback) {
 	if (hit == null) {
-		var colour = bground;
+		let colour = bground;
 	} else {
-		var colour = Phong(hit.obj, eye, d, hit.t, objects, reflects, -1);
+		let colour = Phong(hit.obj, eye, d, hit.t, objects, reflects, -1);
 	}
 	callback(c, r, colour);
+}
+
+function measureDepths() {
+	let depths = new Matrix(image.width, image.height);
+	for (let r = 0; r < image.height, r++) {
+		for (let c = 0; c < image.width; c++) {
+			let d = getRay(c, r);
+			let hit = intersect(eye, d, -1);
+			depths.set(c, r, (hit ? hit.t : Infinity));
+		}
+	}
+	return depths;
 }
 
 function getRay(c, r) {
@@ -145,9 +174,9 @@ function generatePixel(c, r, callback) {
 	let d = getRay(c, r);
 	let hit = intersect(eye, d, -1);
 	if (hit == null) {
-		var colour = bground;
+		let colour = bground;
 	} else {
-		var colour = Phong(hit.obj, eye, d, hit.t, reflects, -1);
+		let colour = Phong(hit.obj, eye, d, hit.t, reflects, -1);
 	}
 	callback(c, r, colour);
 }
@@ -155,9 +184,9 @@ function generatePixel(c, r, callback) {
 function generatePixelSync(d) {
 	let hit = intersect(eye, d, -1);
 	if (hit == null) {
-		var colour = bground;
+		let colour = bground;
 	} else {
-		var colour = Phong(hit.obj, eye, d, hit.t, reflects, -1);
+		let colour = Phong(hit.obj, eye, d, hit.t, reflects, -1);
 	}
 	return colour;
 }
@@ -204,7 +233,7 @@ function Phong(obj, source, dir, t, bounce, thisIndex) {
 	let point = source.Add(dir.Scale(t));
 	let normal = obj.Normal(point).Normalise();
 	
-	for (var light of lights) {
+	for (let light of lights) {
 		let ambient = light.ambient.Multiply(obj.ambient);
 		colour = colour.Add(ambient);
 
