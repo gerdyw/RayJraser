@@ -69,7 +69,7 @@ function main() {
 	}).on("mouseup", fireDrawer);
     $.getJSON("objects.json", (json) => {
     	objects = json.map(o => objectFactory(o));
-//		fireDrawer();
+		fireDrawer();
     });
 }
 
