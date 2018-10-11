@@ -18,12 +18,14 @@ let AA = false;
 let light = new Colour(0, 0, 0);
 let redLight = light.red.Multiply(0.5);
 let blueLight = light.blue.Multiply(0.5);
+let whiteLight = new Colour(0.2, 0.2, 0.2);
 
 let edgeAA = false;
 
 let lights = [
-		new Light(new Vector(3, 4, 5), redLight, redLight, redLight),
-		new Light(new Vector(-3, 4, 5), blueLight, blueLight, blueLight)
+//		new Light(new Vector(3, 4, 5), redLight, redLight, redLight),
+	new Light(new Vector(-3, 4, 5), blueLight, blueLight, blueLight),
+	new Light(new Vector(0, 0, -3), whiteLight, whiteLight, whiteLight)
 ];
 
 //        let u = new Vector(1, 0, 0);
@@ -70,7 +72,7 @@ function main() {
 	}).on("mouseup", fireDrawer);
     $.getJSON("objects.json", (json) => {
     	objects = json.map(o => objectFactory(o));
-//		fireDrawer();
+		fireDrawer();
     });
 }
 
