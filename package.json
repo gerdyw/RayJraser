@@ -1,17 +1,27 @@
 {
-  "name": "ray-tracing",
+  "name": "rayjraser",
   "version": "1.0.0",
   "description": "ray-trace-test",
   "main": "index.js",
-  "dependencies": {
-    "express": "^4.16.3",
-    "jcanvas": "^21.0.1",
-    "jquery": "^3.3.1"
-  },
+  "dependencies": {},
   "devDependencies": {},
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
   },
-  "author": "",
-  "license": "ISC"
+  "author": "Geordie Winlove",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gerdyw/RayJraser.git"
+  },
+  "keywords": [
+    "Ray",
+    "tracing",
+    "javascript"
+  ],
+  "bugs": {
+    "url": "https://github.com/gerdyw/RayJraser/issues"
+  },
+  "homepage": "https://github.com/gerdyw/RayJraser#readme"
 }

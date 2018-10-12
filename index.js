@@ -23,9 +23,9 @@ let whiteLight = new Colour(0.2, 0.2, 0.2);
 let edgeAA = false;
 
 let lights = [
-//		new Light(new Vector(3, 4, 5), redLight, redLight, redLight),
+    new Light(new Vector(3, 4, 5), redLight, redLight, redLight),
 	new Light(new Vector(-3, 4, 5), blueLight, blueLight, blueLight),
-	new Light(new Vector(0, 0, -3), whiteLight, whiteLight, whiteLight)
+//	new Light(new Vector(0, 0, -3), whiteLight, whiteLight, whiteLight)
 ];
 
 //        let u = new Vector(1, 0, 0);
